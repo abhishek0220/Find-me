@@ -7,3 +7,5 @@ psycopg2-binary
 sqlalchemy-cockroachdb
 fastapi~=0.66.0
 pytz~=2021.1
+pydantic[email]~=1.8.2
+fastapi-jwt-auth

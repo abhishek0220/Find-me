@@ -18,7 +18,7 @@ task_association_table = Table(
 )
 
 
-class User(Base):
+class UserModel(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
@@ -27,9 +27,9 @@ class User(Base):
     display_picture = Column(String, nullable=True)
     score = Column(Integer, default=0)
 
-    tasks_added: RelationshipProperty = relationship("Task", back_populates="author")
+    tasks_added: RelationshipProperty = relationship("TaskModel", back_populates="author")
     task_completed: RelationshipProperty = relationship(
-        "Task",
+        "TaskModel",
         secondary=task_association_table,
         back_populates="completed_by"
     )
@@ -40,17 +40,18 @@ class User(Base):
         db.session.refresh(self)
 
 
-class Task(Base):
+class TaskModel(Base):
     __tablename__ = "tasks"
     id = Column(Integer, primary_key=True, index=True)
     author_id = Column(Integer, ForeignKey('users.id'))
-    author = relationship("User", back_populates="tasks_added")
+    author = relationship("UserModel", back_populates="tasks_added")
     title = Column(String)
     image_url = Column(String)
     hints = Column(String)
     description = Column(String)
     completed_by = relationship(
-        "User",
+        "UserModel",
         secondary=task_association_table,
         back_populates="task_completed"
     )
+
