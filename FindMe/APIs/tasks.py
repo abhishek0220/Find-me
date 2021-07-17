@@ -1,8 +1,9 @@
+from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends, Header
 from fastapi_sqlalchemy import db
 from fastapi_jwt_auth import AuthJWT
 
-from FindMe.Schemas.tasks import TasksAdd
+from FindMe.Schemas.tasks import TasksAdd, GetSingleTask
 from FindMe.models import UserModel, TaskModel
 from .Example_Response import tasks as example_resp
 from FindMe.Utils.image import save_img_to_cloud
@@ -46,3 +47,25 @@ async def add_task(task: TasksAdd, authorize: AuthJWT = Depends(), authorization
     db_user.score = UserModel.score + TASK_CREATION_SCORE
     db_user.save_to_db()
     return {'status': 'OK', 'message': "Task Created"}
+
+
+@router.get(
+    "/",
+    tags=['Tasks'],
+    response_model=GetSingleTask
+)
+async def get_task(uid: Optional[str] = None, authorize: AuthJWT = Depends(), authorization: str = Header(...)):
+    """
+    Add Tasks for other user
+    **access_token**: access token (in headers)
+    - **id**: of the task
+    """
+    try:
+        authorize.jwt_required()
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Not Authorized")
+    if uid is not None:
+        db_task: UserModel = db.session.query(TaskModel).filter(TaskModel.id == uid).first()
+        return db_task
+    else:
+        return "sorry"

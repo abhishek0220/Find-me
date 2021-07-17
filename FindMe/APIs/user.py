@@ -88,7 +88,6 @@ async def get_user_details(username: Optional[str], authorize: AuthJWT = Depends
         authorize.jwt_required()
     except Exception as e:
         raise HTTPException(status_code=401, detail="Not Authorized")
-    print(username,'-------')
     if username is None:
         user_email = authorize.get_jwt_subject()
         db_user: UserModel = db.session.query(UserModel).filter(UserModel.email == user_email).first()
