@@ -1,6 +1,11 @@
 from pydantic import BaseModel, validator
 
 
+class CustomResp(BaseModel):
+    status: str
+    message: str
+
+
 class TaskORMBase(BaseModel):
     id: str
 

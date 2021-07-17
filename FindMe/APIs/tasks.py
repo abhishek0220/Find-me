@@ -1,11 +1,11 @@
 from typing import Optional, Union, List
 import os
-from fastapi import APIRouter, HTTPException, Depends, Header
+from fastapi import APIRouter, HTTPException, Depends, Header, Response
 from fastapi_sqlalchemy import db
 from fastapi_jwt_auth import AuthJWT
 from geopy import distance
 
-from FindMe.Schemas.tasks import TasksAdd, TasksComplete
+from FindMe.Schemas.tasks import TasksAdd, TasksComplete, CustomResp
 from FindMe.Schemas import extras
 from FindMe.models import UserModel, TaskModel
 from .Example_Response import tasks as example_resp
@@ -65,10 +65,13 @@ async def add_task(task: TasksAdd, authorize: AuthJWT = Depends(), authorization
 
 @router.post(
     "/submit",
-    tags=['Tasks']
+    tags=['Tasks'],
+    response_model=CustomResp,
+    responses=example_resp.task_completed_response
 )
 async def complete_task(
-        uid: int, task: TasksComplete, authorize: AuthJWT = Depends(), authorization: str = Header(...)
+        uid: int, task: TasksComplete, response: Response,
+        authorize: AuthJWT = Depends(), authorization: str = Header(...)
 ):
     """
     Add Tasks for other user
