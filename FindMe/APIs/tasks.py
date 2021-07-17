@@ -3,6 +3,7 @@ import os
 from fastapi import APIRouter, HTTPException, Depends, Header
 from fastapi_sqlalchemy import db
 from fastapi_jwt_auth import AuthJWT
+from geopy import distance
 
 from FindMe.Schemas.tasks import TasksAdd, TasksComplete
 from FindMe.Schemas import extras
@@ -14,7 +15,14 @@ from FindMe.Utils.imageSimilarity import cv_client
 router = APIRouter()
 
 TASK_CREATION_SCORE = 50
+VICINITY_DISTANCE = 0.5
 
+def isClose(lat1, long1, lat2, long2):
+    distanceInKms = distance.distance((lat1, long1), (lat2, long2)).km
+    if(distanceInKms < VICINITY_DISTANCE):
+        return True
+    else:
+        return False
 
 @router.post(
     "/add",
@@ -81,6 +89,8 @@ async def complete_task(
     """
     Check if lies within same distance
     """
+    if not isClose(db_task.latitude, db_task.longitude, task.latitude, task.longitude, task.latitude, task.longitude):
+        return {'status': 'NOTOK', 'message': "You are not at the right place!!"}
     file_loc, file_name = save_image_locally(
         img_b64=task.image,
         file_prefix=db_user.username
