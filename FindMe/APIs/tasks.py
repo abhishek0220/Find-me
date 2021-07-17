@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union, List
 from fastapi import APIRouter, HTTPException, Depends, Header
 from fastapi_sqlalchemy import db
 from fastapi_jwt_auth import AuthJWT
@@ -52,7 +52,7 @@ async def add_task(task: TasksAdd, authorize: AuthJWT = Depends(), authorization
 @router.get(
     "/",
     tags=['Tasks'],
-    response_model=GetSingleTask
+    response_model=Union(GetSingleTask, List[GetSingleTask])
 )
 async def get_task(uid: Optional[str] = None, authorize: AuthJWT = Depends(), authorization: str = Header(...)):
     """
@@ -68,4 +68,4 @@ async def get_task(uid: Optional[str] = None, authorize: AuthJWT = Depends(), au
         db_task: UserModel = db.session.query(TaskModel).filter(TaskModel.id == uid).first()
         return db_task
     else:
-        return "sorry"
+        return db.session.query(TaskModel).all()
