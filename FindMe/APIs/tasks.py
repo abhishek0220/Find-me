@@ -92,7 +92,7 @@ async def complete_task(
 @router.get(
     "/",
     tags=['Tasks'],
-    response_model=Union(GetSingleTask, List[GetSingleTask])
+    response_model=Union[GetSingleTask, List[GetSingleTask]]
 )
 async def get_task(uid: Optional[str] = None, authorize: AuthJWT = Depends(), authorization: str = Header(...)):
     """
