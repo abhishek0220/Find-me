@@ -23,6 +23,7 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     email = Column(String, unique=True)
+    username = Column(String)
     password = Column(String)
     display_picture = Column(String, nullable=True)
     score = Column(Integer, default=0)
@@ -51,6 +52,8 @@ class TaskModel(Base):
     image_url = Column(String)
     hints = Column(String)
     description = Column(String)
+    city = Column(String)
+    country = Column(String)
     completed_by = relationship(
         "UserModel",
         secondary=task_association_table,

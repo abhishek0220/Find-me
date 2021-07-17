@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi_sqlalchemy import DBSessionMiddleware
 from datetime import datetime
 from FindMe.APIs.user import router as user_router
+from FindMe.APIs.tasks import router as tasks_router
 from FindMe.tags import tags_metadata
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
@@ -23,6 +24,7 @@ started_at = datetime.now(IST)
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["COCKROACHDB"])
 app.include_router(user_router)
+app.include_router(tasks_router, prefix='/tasks')
 
 
 class Settings(BaseModel):

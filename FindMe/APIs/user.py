@@ -25,7 +25,8 @@ async def signup(user: UserRegister):
     user_exist = db.session.query(UserModel).filter(UserModel.email == user.email).first()
     if user_exist:
         raise HTTPException(status_code=400, detail="User already exist")
-    db_user = UserModel(**user.dict())
+    username = user.email.split('@')[0]
+    db_user = UserModel(**{"username": username}, **user.dict())
     db_user.save_to_db()
     return {'status': 'OK', 'message': "User Created"}
 
