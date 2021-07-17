@@ -48,3 +48,9 @@ class TasksAdd(SingleTask):
         except ValueError:
             raise ValueError("Invalid longitude")
         return v
+
+
+class TasksComplete(BaseModel):
+    latitude: str
+    longitude: str
+    image: str
