@@ -45,6 +45,8 @@ class TaskModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     author_id = Column(Integer, ForeignKey('users.id'))
     author = relationship("UserModel", back_populates="tasks_added")
+    latitude = Column(String)
+    longitude = Column(String)
     title = Column(String)
     image_url = Column(String)
     hints = Column(String)
