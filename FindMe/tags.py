@@ -6,5 +6,9 @@ tags_metadata = [
     {
         "name": "User",
         "description": "User operations",
+    },
+    {
+        "name": "Tasks",
+        "description": "Task operations",
     }
 ]

@@ -3,12 +3,17 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import RelationshipProperty, relationship
 from fastapi_sqlalchemy import db
 import uuid
+import time
 
 Base = declarative_base()
 
 
 def get_random_uuid():
     return ''.join(str(uuid.uuid4()).split('-'))
+
+
+def get_current_time():
+    return str(int(time.time()))
 
 
 task_association_table = Table(
@@ -53,6 +58,7 @@ class TaskModel(Base):
     hints = Column(String)
     description = Column(String)
     city = Column(String)
+    time_added = Column(String, default=get_current_time)
     country = Column(String)
     completed_by = relationship(
         "UserModel",
@@ -60,3 +66,7 @@ class TaskModel(Base):
         back_populates="task_completed"
     )
 
+    def save_to_db(self) -> None:
+        db.session.add(self)
+        db.session.commit()
+        db.session.refresh(self)

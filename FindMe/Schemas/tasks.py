@@ -17,6 +17,7 @@ class TasksAdd(BaseModel):
             float(v)
         except ValueError:
             raise ValueError("Invalid latitude")
+        return v
 
     @validator('longitude')
     def longitude_check(cls, v: str):
@@ -24,3 +25,4 @@ class TasksAdd(BaseModel):
             float(v)
         except ValueError:
             raise ValueError("Invalid longitude")
+        return v
