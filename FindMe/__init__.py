@@ -21,4 +21,4 @@ app.include_router(user_router)
 
 @app.get('/')
 async def root():
-    return {"status": "OK", "time_up": started_at}
+    return {"project": "FindME", "status": "OK", "time_up": started_at}
