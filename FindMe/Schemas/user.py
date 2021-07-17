@@ -1,5 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, validator
+from FindMe.Schemas import tasks
 from hashlib import md5
 
 
@@ -37,7 +38,7 @@ class UserInfo(BaseModel):
     score: int
 
     @validator('display_picture', pre=True)
-    def pw_creation(cls, v: Optional[str]):
+    def display_picture_check(cls, v: Optional[str]):
         if v is None:
             return 'https://storage.googleapis.com/bvhacks/default.jpg'
 
@@ -46,7 +47,8 @@ class UserInfo(BaseModel):
 
 
 class CompleteUserInfo(UserInfo):
-    email: str
+    tasks_added: List[tasks.TaskOverview]
+    task_completed: List[tasks.TaskOverview]
 
     class Config:
         orm_mode = True

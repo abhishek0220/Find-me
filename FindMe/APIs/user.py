@@ -4,7 +4,7 @@ from fastapi_sqlalchemy import db
 from fastapi_jwt_auth import AuthJWT
 from typing import Optional
 
-from FindMe.Schemas.user import UserRegister, UserLogin, TokenJWT, UserInfo
+from FindMe.Schemas.user import UserRegister, UserLogin, TokenJWT, CompleteUserInfo
 from FindMe.models import UserModel
 from .Example_Response import user as example_resp
 
@@ -76,9 +76,9 @@ def refresh(authorize: AuthJWT = Depends(), authorization: str = Header(...)):
 @router.get(
     "/user",
     tags=['User'],
-    response_model=UserInfo
+    response_model=CompleteUserInfo
 )
-async def get_user_details(username: Optional[str], authorize: AuthJWT = Depends(), authorization: str = Header(...)):
+async def get_user_details(username: Optional[str] = None, authorize: AuthJWT = Depends(), authorization: str = Header(...)):
     """
     User get details endpoint
     - **access_token**: access token (in headers)

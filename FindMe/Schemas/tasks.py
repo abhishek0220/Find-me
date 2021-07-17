@@ -1,13 +1,21 @@
 from pydantic import BaseModel, validator
 
 
-class SingleTask(BaseModel):
+class TaskBase(BaseModel):
     title: str
     image_url: str
-    hints: str
-    description: str
     city: str
     country: str
+
+
+class TaskOverview(TaskBase):
+    class Config:
+        orm_mode = True
+
+
+class SingleTask(TaskBase):
+    hints: str
+    description: str
 
 
 class GetSingleTask(SingleTask):
