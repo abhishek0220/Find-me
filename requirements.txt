@@ -1,0 +1,9 @@
+python-dotenv~=0.18.0
+uvicorn~=0.14.0
+SQLAlchemy~=1.4.21
+fastapi_sqlalchemy
+alembic~=1.6.5
+psycopg2
+sqlalchemy-cockroachdb
+fastapi~=0.66.0
+pytz~=2021.1

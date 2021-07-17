@@ -1,0 +1,12 @@
+# venv
+venv
+.venv
+
+# pycharm cache
+.idea
+
+# python cache
+__pycache__
+
+# secrets
+.env
