@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi_sqlalchemy import DBSessionMiddleware
 from datetime import datetime
 from FindMe.APIs.user import router as user_router
+from FindMe.tags import tags_metadata
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 import pytz
@@ -12,7 +13,8 @@ from pydantic import BaseModel
 app = FastAPI(
     title="Find ME",
     description="Backend APIs for find me Android app",
-    version="1.0.0"
+    version="1.0.0",
+    openapi_tags=tags_metadata
 )
 
 IST = pytz.timezone('Asia/Kolkata')
