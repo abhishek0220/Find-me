@@ -2,6 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware
 from datetime import datetime
+from FindMe.APIs.user import router as user_router
 import pytz
 
 app = FastAPI(
@@ -15,6 +16,7 @@ started_at = datetime.now(IST)
 
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["COCKROACHDB"])
+app.include_router(user_router)
 
 
 @app.get('/')
