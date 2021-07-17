@@ -7,7 +7,7 @@ import os
 
 
 def save_image_locally(img_b64: str, file_prefix: str = ''):
-    file_name = file_prefix.join(str(uuid.uuid4()).split()) + '.jpg'
+    file_name = file_prefix + ''.join(str(uuid.uuid4()).split()) + '.jpg'
     image_data = bytes(img_b64, encoding="ascii")
     im = Image.open(BytesIO(base64.b64decode(image_data)))
     im = im.convert("RGB")
