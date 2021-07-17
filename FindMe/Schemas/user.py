@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr, validator
 from hashlib import md5
 
@@ -21,6 +21,35 @@ class UserLogin(BaseModel):
 
 class UserRegister(UserLogin):
     name: str
+    username: str
+
+    @validator('username', pre=True)
+    def username_check(cls, v: str):
+        if v.isalnum():
+            return v.lower()
+        raise ValueError('not valid username, should be alphanum')
+
+
+class UserInfo(BaseModel):
+    name: str
+    username: str
+    display_picture: str
+    score: int
+
+    @validator('display_picture', pre=True)
+    def pw_creation(cls, v: Optional[str]):
+        if v is None:
+            return 'https://storage.googleapis.com/bvhacks/default.jpg'
+
+    class Config:
+        orm_mode = True
+
+
+class CompleteUserInfo(UserInfo):
+    email: str
+
+    class Config:
+        orm_mode = True
 
 
 class TokenJWT(BaseModel):

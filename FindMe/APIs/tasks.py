@@ -9,6 +9,8 @@ from FindMe.Utils.image import save_img_to_cloud
 
 router = APIRouter()
 
+TASK_CREATION_SCORE = 50
+
 
 @router.post(
     "/add",
@@ -41,5 +43,6 @@ async def add_task(task: TasksAdd, authorize: AuthJWT = Depends(), authorization
     task.image_url = file_loc
     db_task = TaskModel(**task.dict())
     db_user.tasks_added.append(db_task)
+    db_user.score = UserModel.score + TASK_CREATION_SCORE
     db_user.save_to_db()
     return {'status': 'OK', 'message': "Task Created"}

@@ -2,8 +2,9 @@ import datetime
 from fastapi import APIRouter, HTTPException, Depends, Header
 from fastapi_sqlalchemy import db
 from fastapi_jwt_auth import AuthJWT
+from typing import Optional
 
-from FindMe.Schemas.user import UserRegister, UserLogin, TokenJWT
+from FindMe.Schemas.user import UserRegister, UserLogin, TokenJWT, UserInfo
 from FindMe.models import UserModel
 from .Example_Response import user as example_resp
 
@@ -19,14 +20,17 @@ async def signup(user: UserRegister):
     """
     User Login Endpoint
     - **name**: Name of the registrant
-    - **email**: Email by which you want to register
+    - **username**: Username of the registrant (unique)
+    - **email**: Email by which you want to register (unique)
     - **password**: password to used at the time of login
     """
     user_exist = db.session.query(UserModel).filter(UserModel.email == user.email).first()
     if user_exist:
-        raise HTTPException(status_code=400, detail="User already exist")
-    username = user.email.split('@')[0]
-    db_user = UserModel(**{"username": username}, **user.dict())
+        raise HTTPException(status_code=400, detail="User with same email already exist")
+    user_exist = db.session.query(UserModel).filter(UserModel.username == user.username).first()
+    if user_exist:
+        raise HTTPException(status_code=400, detail="User with same username already exist")
+    db_user = UserModel(**user.dict())
     db_user.save_to_db()
     return {'status': 'OK', 'message': "User Created"}
 
@@ -70,13 +74,24 @@ def refresh(authorize: AuthJWT = Depends(), authorization: str = Header(...)):
 
 
 @router.get(
-    "/info",
+    "/user",
     tags=['User'],
+    response_model=UserInfo
 )
-async def get_details(authorization: str = Header(...)):
+async def get_user_details(username: Optional[str], authorize: AuthJWT = Depends(), authorization: str = Header(...)):
     """
     User get details endpoint
     - **access_token**: access token (in headers)
     Authorization: Bearer {ACCESS_TOKEN}
     """
-    raise NotImplementedError
+    try:
+        authorize.jwt_required()
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Not Authorized")
+    print(username,'-------')
+    if username is None:
+        user_email = authorize.get_jwt_subject()
+        db_user: UserModel = db.session.query(UserModel).filter(UserModel.email == user_email).first()
+    else:
+        db_user: UserModel = db.session.query(UserModel).filter(UserModel.username == username).first()
+    return db_user

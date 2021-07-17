@@ -28,7 +28,7 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     email = Column(String, unique=True)
-    username = Column(String)
+    username = Column(String, unique=True)
     password = Column(String)
     display_picture = Column(String, nullable=True)
     score = Column(Integer, default=0)
