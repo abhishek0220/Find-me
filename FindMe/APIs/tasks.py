@@ -15,14 +15,17 @@ from FindMe.Utils.imageSimilarity import cv_client
 router = APIRouter()
 
 TASK_CREATION_SCORE = 50
+TASK_COMPLETION_SCORE = 25
 VICINITY_DISTANCE = 0.5
 
-def isClose(lat1, long1, lat2, long2):
-    distanceInKms = distance.distance((lat1, long1), (lat2, long2)).km
-    if(distanceInKms < VICINITY_DISTANCE):
+
+def is_close(lat1, long1, lat2, long2):
+    distance_in_kms = distance.distance((lat1, long1), (lat2, long2)).km
+    if distance_in_kms < VICINITY_DISTANCE:
         return True
     else:
         return False
+
 
 @router.post(
     "/add",
@@ -86,18 +89,24 @@ async def complete_task(
     db_user: UserModel = db.session.query(UserModel).filter(UserModel.email == user_email).first()
     if db_task in db_user.tasks_added:
         raise HTTPException(status_code=403, detail="Author of the task cannot complete that task")
-    """
-    Check if lies within same distance
-    """
-    if not isClose(db_task.latitude, db_task.longitude, task.latitude, task.longitude, task.latitude, task.longitude):
+    if db_task in db_user.task_completed:
+        raise HTTPException(status_code=403, detail="Task Already Completed")
+    if not is_close(db_task.latitude, db_task.longitude, task.latitude, task.longitude):
         return {'status': 'NOTOK', 'message': "You are not at the right place!!"}
+
     file_loc, file_name = save_image_locally(
         img_b64=task.image,
         file_prefix=db_user.username
     )
     is_similar = cv_client.check_similar(db_task.image_url, file_loc)
     os.remove(file_loc)
-    return is_similar
+    if is_similar:
+        db_user.score = UserModel.score + TASK_COMPLETION_SCORE
+        db_user.task_completed.append(db_task)
+        db_user.save_to_db()
+        return {'status': 'OK', 'message': "You are at the right place!!"}
+    else:
+        return {'status': 'NOTOK', 'message': "Your image is not right"}
 
 
 @router.get(
