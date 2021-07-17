@@ -1,6 +1,10 @@
 from pydantic import BaseModel, validator
 
 
+class TaskORMBase(BaseModel):
+    id: str
+
+
 class TaskBase(BaseModel):
     title: str
     image_url: str
@@ -8,7 +12,8 @@ class TaskBase(BaseModel):
     country: str
 
 
-class TaskOverview(TaskBase):
+class TaskOverview(TaskBase, TaskORMBase):
+
     class Config:
         orm_mode = True
 
@@ -18,7 +23,7 @@ class SingleTask(TaskBase):
     description: str
 
 
-class GetSingleTask(SingleTask):
+class GetSingleTask(SingleTask, TaskORMBase):
     class Config:
         orm_mode = True
 
