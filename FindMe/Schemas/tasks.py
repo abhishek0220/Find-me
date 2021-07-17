@@ -23,11 +23,6 @@ class SingleTask(TaskBase):
     description: str
 
 
-class GetSingleTask(SingleTask, TaskORMBase):
-    class Config:
-        orm_mode = True
-
-
 class TasksAdd(SingleTask):
     latitude: str
     longitude: str

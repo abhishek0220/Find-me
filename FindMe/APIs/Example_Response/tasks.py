@@ -19,3 +19,13 @@ task_added_response = {
         },
     },
 }
+task_get_response = {
+    401: {
+        "description": "Not Authorized",
+        "content": {
+            "application/json": {
+                "example": {"details": "Not Authorized"}
+            }
+        },
+    },
+}

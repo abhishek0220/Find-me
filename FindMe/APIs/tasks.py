@@ -4,7 +4,8 @@ from fastapi import APIRouter, HTTPException, Depends, Header
 from fastapi_sqlalchemy import db
 from fastapi_jwt_auth import AuthJWT
 
-from FindMe.Schemas.tasks import TasksAdd, GetSingleTask, TasksComplete
+from FindMe.Schemas.tasks import TasksAdd, TasksComplete
+from FindMe.Schemas import extras
 from FindMe.models import UserModel, TaskModel
 from .Example_Response import tasks as example_resp
 from FindMe.Utils.image import save_img_to_cloud, save_image_locally
@@ -92,20 +93,23 @@ async def complete_task(
 @router.get(
     "/",
     tags=['Tasks'],
-    response_model=Union[GetSingleTask, List[GetSingleTask]]
+    response_model=Union[extras.GetSingleTask, List[extras.GetSingleTask]],
+    responses=example_resp.task_get_response
 )
 async def get_task(uid: Optional[str] = None, authorize: AuthJWT = Depends(), authorization: str = Header(...)):
     """
     Add Tasks for other user
     **access_token**: access token (in headers)
-    - **id**: of the task
+    - **uid[Optional]**: of the task (in query param) if not passed all task will be shown
     """
     try:
         authorize.jwt_required()
+        user_email = authorize.get_jwt_subject()
     except Exception as e:
         raise HTTPException(status_code=401, detail="Not Authorized")
     if uid is not None:
-        db_task: UserModel = db.session.query(TaskModel).filter(TaskModel.id == uid).first()
+        db_task: TaskModel = db.session.query(TaskModel).filter(TaskModel.id == uid).first()
         return db_task
     else:
-        return db.session.query(TaskModel).all()
+        db_user: UserModel = db.session.query(UserModel).filter(UserModel.email == user_email).first()
+        return db.session.query(TaskModel).filter(TaskModel.author != db_user).all()

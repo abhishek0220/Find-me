@@ -76,7 +76,8 @@ def refresh(authorize: AuthJWT = Depends(), authorization: str = Header(...)):
 @router.get(
     "/user",
     tags=['User'],
-    response_model=CompleteUserInfo
+    response_model=CompleteUserInfo,
+    responses=example_resp.user_get_user_example_response
 )
 async def get_user_details(username: Optional[str] = None, authorize: AuthJWT = Depends(), authorization: str = Header(...)):
     """
