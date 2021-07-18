@@ -6,10 +6,21 @@ from typing import Optional
 
 from FindMe.Schemas.user import UserRegister, UserLogin, TokenJWT, CompleteUserInfo
 from FindMe.models import UserModel
+from FindMe.Utils.image import save_img_to_cloud, save_image_locally
+from FindMe.Utils.gstorage import cloud_storage
 from .Example_Response import user as example_resp
 
 router = APIRouter()
 
+def profile_pic_update(db_user,b64_img):
+    if(db_user.display_picture is not None):
+        cloud_storage.delete(db_user.display_picture)     
+    new_url = save_img_to_cloud(
+        img_b64=b64_img,
+        file_prefix=db_user.username
+    )     
+    db_user.display_picture = new_url    
+    
 
 @router.post(
     "/signup",
@@ -76,7 +87,8 @@ def refresh(authorize: AuthJWT = Depends(), authorization: str = Header(...)):
 @router.get(
     "/user",
     tags=['User'],
-    response_model=CompleteUserInfo
+    response_model=CompleteUserInfo,
+    responses=example_resp.user_get_user_example_response
 )
 async def get_user_details(username: Optional[str] = None, authorize: AuthJWT = Depends(), authorization: str = Header(...)):
     """

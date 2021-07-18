@@ -1,6 +1,11 @@
 from pydantic import BaseModel, validator
 
 
+class CustomResp(BaseModel):
+    status: str
+    message: str
+
+
 class TaskORMBase(BaseModel):
     id: str
 
@@ -21,11 +26,6 @@ class TaskOverview(TaskBase, TaskORMBase):
 class SingleTask(TaskBase):
     hints: str
     description: str
-
-
-class GetSingleTask(SingleTask, TaskORMBase):
-    class Config:
-        orm_mode = True
 
 
 class TasksAdd(SingleTask):

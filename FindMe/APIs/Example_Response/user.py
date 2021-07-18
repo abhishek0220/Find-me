@@ -32,3 +32,14 @@ user_login_example_response = {
         },
     },
 }
+
+user_get_user_example_response = {
+    401: {
+        "description": "Not Authorized",
+        "content": {
+            "application/json": {
+                "example": {"details": "Not Authorized"}
+            }
+        },
+    },
+}
