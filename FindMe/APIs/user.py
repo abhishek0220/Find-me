@@ -12,8 +12,9 @@ from .Example_Response import user as example_resp
 
 router = APIRouter()
 
-def profile_pic_update(db_user,b64_img): 
-    cloud_storage.delete(db_user.display_picture)   
+def profile_pic_update(db_user,b64_img):
+    if(db_user.display_picture is not None):
+        cloud_storage.delete(db_user.display_picture)     
     new_url = save_img_to_cloud(
         img_b64=b64_img,
         file_prefix=db_user.username
