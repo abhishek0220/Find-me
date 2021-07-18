@@ -1,10 +1,3 @@
-import sys
-sys.path.append("/Users/samarthsingh/Find-me/")
-import os
-os.environ["COCKROACHDB"]= "cockroachdb://findadmin:findmlh2021iitj@free-tier5.gcp-europe-west1.cockroachlabs.cloud:26257/abhishek-605.findme?sslmode=require"
-os.environ['JWT_SECRET'] = "mlhsecretforfindmeproj"
-os.environ['SUBSCRIPTION_KEY']= "0bf8962f04a84f7aaecb166bc0463ab5"
-os.environ['IMAGE_SIMILARITY_ENDPOINT'] = "https://abhisproj.cognitiveservices.azure.com"
 import pytest
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from FindMe.Utils.imageSimilarity import _CvClient
