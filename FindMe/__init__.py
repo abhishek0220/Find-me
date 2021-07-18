@@ -17,7 +17,6 @@ app = FastAPI(
     version="1.0.0",
     openapi_tags=tags_metadata
 )
-
 IST = pytz.timezone('Asia/Kolkata')
 started_at = datetime.now(IST)
 
