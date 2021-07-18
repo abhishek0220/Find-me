@@ -35,6 +35,7 @@ async def signup(user: UserRegister):
     - **email**: Email by which you want to register (unique)
     - **password**: password to used at the time of login
     """
+    return {"msg":"Disabled"}
     user_exist = db.session.query(UserModel).filter(UserModel.email == user.email).first()
     if user_exist:
         raise HTTPException(status_code=400, detail="User with same email already exist")
