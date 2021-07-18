@@ -41,6 +41,7 @@ class UserInfo(BaseModel):
     def display_picture_check(cls, v: Optional[str]):
         if v is None:
             return 'https://storage.googleapis.com/bvhacks/default.jpg'
+        return v
 
     class Config:
         orm_mode = True
